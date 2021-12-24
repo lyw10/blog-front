@@ -145,7 +145,6 @@ export default {
           setTimeout(() => {
             this.$router.push('/login')
           }, 100)
-          console.log(res)
         } else {
           this.$refs.observer.setErrors(res.msg)
         }

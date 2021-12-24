@@ -1,0 +1,73 @@
+<template>
+  <div class="layui-form layui-form-pane layui-tab-item layui-show">
+    <div class="layui-form-item">
+      <div class="avatar-add">
+        <p>建议尺寸168*168，支持jpg、png、gif，最大不能超过50KB</p>
+        <label for="pic" class="layui-btn upload-img">
+          <i class="layui-icon">&#xe67c;</i>上传头像
+        </label>
+        <input
+          id="pic"
+          type="file"
+          name="file"
+          accept="image/png, image/gif, image/jpg"
+          @change="upload"
+        />
+        <img :src="baseUrl + pic" />
+        <span class="loading"></span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { uploadImg } from '@/api/content'
+import config from '@/config/index'
+import { updateUserInfo } from '@/api/user'
+export default {
+  name: 'pic-upload',
+  data () {
+    return {
+      formData: '',
+      pic: this.$store.state.userInfo.pic
+    }
+  },
+  computed: {
+    baseUrl () {
+      return config.baseUrl
+    }
+  },
+  methods: {
+    upload (e) {
+      let file = e.target.files
+      let formData = new FormData()
+      if (file.length > 0) {
+        formData.append('file', file[0])
+        this.formData = formData
+      }
+      // 上传图片
+      uploadImg(this.formData).then(res => {
+        if (res.code === 200) {
+          this.pic = res.data
+        }
+        // 更新用户基本信息
+        updateUserInfo({ pic: this.pic }).then(res => {
+          if (res.code === 200) {
+            let user = this.$store.state.userInfo
+            user.pic = this.pic
+            this.$store.commit('setUserInfo', user)
+            this.$alert('图片上传成功')
+          }
+        })
+        document.getElementById('pic').value = ''
+      })
+    }
+  }
+}
+</script>
+
+<style>
+#pic {
+  display: none;
+}
+</style>

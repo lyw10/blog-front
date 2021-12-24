@@ -1,0 +1,30 @@
+<template>
+  <div class="fly-panel" v-show="lists.length">
+    <div class="fly-panel-title fly-filter">
+      <a>置顶</a>
+      <a href="#signin" class="layui-hide-sm layui-show-xs-block fly-right" id="LAY_goSignin" style="color: #FF5722;">去签到</a>
+    </div>
+    <list-item :lists="lists" @nextpage="nextPage()" :isShow="false"/>
+  </div>
+</template>
+
+<script>
+import ListItem from '@/components/contents/ListItem'
+export default {
+  name: 'top',
+  data () {
+    return {
+      page: 0,
+      limit: 20,
+      lists: []
+    }
+  },
+  components: {
+    ListItem
+  },
+}
+</script>
+
+<style>
+
+</style>

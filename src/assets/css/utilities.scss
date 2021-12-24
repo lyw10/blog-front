@@ -1,0 +1,56 @@
+$spacer: 10px !default;
+$spacers: () !default;
+
+$spacers: map-merge($map1: (
+    0: 0,
+    1: 1 * $spacer,
+    2: 2 * $spacer,
+    3: 3 * $spacer,
+    4: 4 * $spacer,
+    5: 5 * $spacer
+), $map2: $spacers);
+
+$utils: () !default;
+
+$utils: map-merge($map1: (
+    m: (
+        property: margin,
+        values: $spacers
+    ),
+    mx: (
+        property: margin-left margin-right,
+        values: $spacers
+    ),
+    my: (
+        property: margin-top margin-bottom,
+        values: $spacers
+    ),
+    mr: (
+        property: margin-right,
+        values: $spacers
+    ),
+    p: (
+        property: padding,
+        values: $spacers
+    ),
+    px: (
+        property: padding-left padding-right,
+        values: $spacers
+    ),
+    py: (
+        property: padding-top padding-bottom,
+        values: $spacers
+    ),
+), $map2: $utils);
+
+@each $key,$value in $utils {
+    $values: map-get($map: $value, $key: values);
+    @each $item-key, $item-value in $values {
+        $properties: map-get($map: $value, $key: property);
+        .#{$key}-#{$item-key} {
+            @each $property in $properties {
+                #{$property}: $item-value !important;
+            }
+        }
+    }
+}
