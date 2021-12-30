@@ -47,28 +47,39 @@
           -->
 
           <div class="layui-form layui-form-pane">
-            <form method="post">
+            <form>
+              <ValidationObserver ref="observer" v-slot="{ validate }">
               <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">邮箱</label>
+                <label for="L_email" class="layui-form-label">用户名</label>
+                <validation-provider name="email" rules="required|email" v-slot="{errors}">
                 <div class="layui-input-inline">
-                  <input type="text" id="L_email" name="email" required lay-verify="required" autocomplete="off" class="layui-input">
+                  <input v-model="username" type="text" name="username" placeholder="请输入用户名" class="layui-input">
                 </div>
+                <div class="layui-form-mid">
+                  <span style="color: #c00;">{{errors[0]}}</span>
+                </div>
+                </validation-provider>
               </div>
               <div class="layui-form-item">
-                <label for="L_vercode" class="layui-form-label">人类验证</label>
-                <div class="layui-input-inline">
-                  <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
-                </div>
-                <div>
-                  <span class="svg" style="color: #c00;" @click="_getCode()" v-html="svg"></span>
-                </div>
+                <label for="L_vercode" class="layui-form-label">验证码</label>
+                <validation-provider name="code" ref="codefield" rules="required|length:4" v-slot="{errors}">
+                  <div class="layui-input-inline">
+                    <input v-model="code" type="text" name="code" placeholder="请输入验证码" class="layui-input">
+                  </div>
+                  <div>
+                    <span class="svg" style="color: #c00;" @click="_getCode()" v-html="svg"></span>
+                  </div>
+                  <div class="layui-form-mid">
+                    <span style="color: #c00;">{{errors[0]}}</span>
+                  </div>
+                </validation-provider>
               </div>
               <div class="layui-form-item">
-                <button class="layui-btn" alert="1" lay-filter="*" lay-submit @click="submit()">提交</button>
+                <button class="layui-btn" alert="1" lay-filter="*" lay-submit @click.prevent="validate().then(submit)">提交</button>
               </div>
+              </ValidationObserver>
             </form>
           </div>
-
         </div>
       </div>
     </div>
@@ -77,8 +88,11 @@
 </template>
 
 <script>
-import { getCode, forget } from '@/api/login'
+import { forget } from '@/api/login'
+import CodeMix from '@/mixin/code'
 export default {
+  name: 'forget',
+  mixins: [CodeMix],
   data () {
     return {
       svg: '',
@@ -87,21 +101,12 @@ export default {
       code: ''
     }
   },
-  mounted () {
-    this._getCode()
-  },
   methods: {
-    _getCode () {
-      getCode().then(res => {
-        if (res.code === 200) {
-          this.svg = res.data
-        }
-      })
-    },
     submit () {
       forget({
         username: this.username,
-        code: this.code
+        code: this.code,
+        sid: this.$store.state.sid
       }).then((res) => {
         if (res.code === 200) {
           alert('邮件发送成功')

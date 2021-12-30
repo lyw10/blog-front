@@ -53,6 +53,18 @@ const routes = [
     component: Forget,
   },
   {
+    path: "/add",
+    name: "add",
+    component: () => import("../components/contents/Add.vue"),
+    meta: { requireAuth: true },
+  },
+  {
+    path: "/detail/:tid",
+    props: true,
+    name: "detail",
+    component: () => import("../components/contents/Detail.vue"),
+  },
+  {
     path: "/confirm",
     name: "confirm",
     component: () => import("../views/Confirm.vue"),

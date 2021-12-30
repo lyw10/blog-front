@@ -32,7 +32,6 @@ class HttpRequest {
         publicConfig.publicPath.map(
           (path) => (isPublic = isPublic || path.test(config.url))
         );
-        console.log(isPublic, config.url);
         const token = store.state.token;
         if (!isPublic && token) {
           config.headers.Authorization = "Bearer " + token;
@@ -66,10 +65,11 @@ class HttpRequest {
   }
   removePending(key, isRequest = false) {
     // key存在
-    if (this.pending[key]) {
-      if (isRequest) this.pending[key]("取消重复的请求！");
-      delete this.pending[key];
-    }
+    // if (this.pending[key]) {
+    //   console.log("this.pending[key]", this.pending[key]);
+    //   if (isRequest) this.pending[key]("取消重复的请求！");
+    //   delete this.pending[key];
+    // }
   }
   // 创建实例
   request(options) {

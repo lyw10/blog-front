@@ -69,11 +69,11 @@
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import { getCode, login } from '@/api/login'
-import { v4 as uuidv4 } from 'uuid'
-
+import CodeMix from '@/mixin/code'
+import { login } from '@/api/login'
 export default {
+  name: 'login',
+  mixins: [CodeMix],
   data () {
     return {
       svg: '',
@@ -82,32 +82,7 @@ export default {
       code: ''
     }
   },
-  components: {
-    ValidationProvider,
-    ValidationObserver,
-  },
-  mounted () {
-    window.vue = this
-    let sid = ''
-    if (localStorage.getItem('sid')) {
-      sid = localStorage.getItem('sid')
-    } else {
-      sid = uuidv4()
-      localStorage.setItem('sid', sid)
-    }
-    this.$store.commit('setSid', sid)
-    console.log(sid);
-    this._getCode()
-  },
   methods: {
-    _getCode () {
-      let sid = this.$store.state.sid
-      getCode(sid).then(res => {
-        if (res.code === 200) {
-          this.svg = res.data
-        }
-      })
-    },
     async submit () {
       const isValid = await this.$refs.observer.validate()
       if (!isValid) return
@@ -131,15 +106,11 @@ export default {
           this.$router.push({ name: 'index' })
         } else if (res.code === 401) {
           this.$refs.codefield.setErrors([res.msg])
-        }
-      }).catch((err) => {
-        console.error('err login', err.response);
-        const data = err.response.data
-        if (data.code === 500) {
+        } else if (res.code === 404) {
           this.$alert('用户名密码校验失败，请检查！')
-        } else {
-          this.$alert('服务器错误！')
         }
+      }).catch(() => {
+        this.$alert('服务器错误！')
       })
     }
   }

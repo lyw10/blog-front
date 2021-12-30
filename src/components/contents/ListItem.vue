@@ -2,22 +2,23 @@
   <div>
     <ul class="fly-list">
       <li v-for="(item,index) in items" :key="'listitem'+index">
-        <a href="user/home.html" class="fly-avatar">
+        <!-- 点击用户头像，跳转到他的首页 -->
+        <router-link :to="{name: 'home'}" class="fly-avatar">
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
-        </a>
+        </router-link>
         <h2>
           <a class="layui-badge">{{item.catalog}}</a>
-          <a href="#">{{item.title}}</a>
+          <router-link :to="{name: 'detail', params: {tid: item._id}}">{{item.title}}</router-link>
         </h2>
         <div class="fly-list-info">
-          <a href="#" link>
-            <!-- <cite>{{item.uid.name}}</cite> -->
+          <a link>
+            <cite class="mr1">{{item.uid && item.uid.name}}</cite>
             <!-- <i class="iconfont icon-renzheng" title="认证信息：XXX"></i> -->
-            <!-- <i class="layui-badge fly-badge-vip" v-if="item.uid.isVip">{{'VIP' + item.uid.isVip}}</i> -->
+            <i class="layui-badge fly-badge-vip" v-if="item.uid && item.uid.isVip !== '0'">{{'VIP' + item.uid.isVip}}</i>
           </a>
           <span>{{item.created | moment}}</span>
-          <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> {{item.fav}}</span>
-          <span class="layui-badge fly-badge-accept layui-hide-xs" v-show="item.isEnd">已结</span>
+          <span class="fly-list-kiss layui-hide-xs"><i class="iconfont icon-kiss"></i> {{item.fav}}</span>
+          <span class="layui-badge fly-badge-accept layui-hide-xs" v-show="item.isEnd === '1'">已结</span>
           <span class="fly-list-nums">
             <i class="iconfont icon-pinglun1" title="回答"></i>
             {{item.answer}}
@@ -41,10 +42,10 @@
 
 <script>
 import _ from 'lodash'
-import moment from 'moment'
-import 'moment/locale/zh-cn'
+import Config from '@/mixin/config'
 export default {
   name: 'listItem',
+  mixins: [Config],
   props: {
     lists: {
       type: Array,
@@ -89,17 +90,6 @@ export default {
   methods: {
     more () {
       this.$emit('nextpage')
-    }
-  },
-  filters: {
-    moment (date) {
-      // 超过7天，显示日期
-      if (moment(date).isBefore(moment().subtract(7, 'days'))) {
-        return moment(date).format('YYYY-MM-DD')
-      } else {
-        // 1小时前，xx小时前
-        return moment(date).from(moment())
-      }
     }
   }
 }

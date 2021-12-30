@@ -1,6 +1,9 @@
 <template>
   <div class="panel main pd2">
-    <div class="msg">Hi, Admin，你已经是我们的正式会员！</div>
+    <div class="msg">Hi, {{userInfo.name}}，欢迎来到来一碗社区，
+      <span v-if="userInfo.isVip !== '0'">你已经是我们的正式会员！</span>
+      <span v-else>您还不是我们的会员哦！</span>
+    </div>
     <div class="layui-row layui-col-space20">
       <div class="layui-col-md6">
         <div class="panel border">
@@ -12,7 +15,8 @@
             </p>
             <p>
               您当前为:
-              <cite>非vip</cite>
+              <cite v-if="userInfo.isVip === '0'">非VIP</cite>
+              <cite v-else>VIP{{userInfo.isVip}}</cite>
             </p>
           </div>
         </div>
@@ -114,6 +118,11 @@ export default {
           icon: 'layui-icon-user'
         }
       ]
+    }
+  },
+  computed: {
+    userInfo () {
+      return this.$store.state.userInfo
     }
   }
 }

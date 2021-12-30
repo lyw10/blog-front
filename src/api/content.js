@@ -1,5 +1,6 @@
 import axios from "@/utils/request";
 import qs from "qs";
+import store from "@/store";
 
 /**
  * 获取文章列表接口
@@ -29,4 +30,21 @@ const uploadImg = (formData) => {
   return axios.post("/content/upload", formData);
 };
 
-export { getList, getTips, getLinks, getTop, uploadImg };
+// 发贴接口
+const addPost = (data) => axios.post("/content/add", { ...data });
+
+// 获取文章详情
+const getDetail = (tid) => {
+  const token = store.state.token;
+  let headers = {};
+  if (token !== "") {
+    headers = {
+      headers: {
+        Authorization: "Bearer " + store.state.token,
+      },
+    };
+  }
+  return axios.get("/public/content/detail?tid=" + tid, headers);
+};
+
+export { getList, getTips, getLinks, getTop, uploadImg, addPost, getDetail };

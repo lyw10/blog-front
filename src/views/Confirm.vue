@@ -34,7 +34,6 @@ export default {
   methods: {
     submit () {
       obj.username = this.username
-      console.log('obj', obj);
       updateUsername(obj).then((res) => {
         if (res.code === 200) {
           this.isSend = true

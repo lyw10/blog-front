@@ -5,7 +5,7 @@
         <li><router-link :to="{name: 'info'}">我的资料</router-link></li>
         <li><router-link :to="{name: 'pic'}">头像</router-link></li>
         <li><router-link :to="{name: 'password'}">密码</router-link></li>
-        <li><router-link :to="{name: 'accounts'}">帐号绑定</router-link></li>
+        <!-- <li><router-link :to="{name: 'accounts'}">帐号绑定</router-link></li> -->
       </ul>
       <div class="layui-tab-content" style="padding: 20px 0;">
         <router-view></router-view>
